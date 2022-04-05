@@ -1,0 +1,23 @@
+{
+  "name": "lab4-npysklyw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShaimaaAliECE/lab4-npysklyw.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ShaimaaAliECE/lab4-npysklyw/issues"
+  },
+  "homepage": "https://github.com/ShaimaaAliECE/lab4-npysklyw#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "jquery": "^3.6.0"
+  }
+}

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Quiz</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <h1 id="header" class="quizlet" >This is a Quiz!</h1>
+    <form id="forma" name="forma" action=/answers>
+    <!-- <form action=/answers >  -->
+       
+    <div id="Question-Div"></div>
+    <div align="center">
+        <input class="Submit" type="submit" value="Submit" />
+        
+    </div>
+    <label id="Answered"></label>
+    <link rel="stylesheet" href="Quiz.css">
+    </form>
+    
+</body>
+<script >
+
+    //Load questions into the document with getQuestions
+    document.getElementById("header").onload = getQuestions();
+
+    //An async function which will get the question data from the server
+    function getQuestions() {
+        let xRequest = new XMLHttpRequest();
+        xRequest.onreadystatechange = displayQuestions;
+
+        xRequest.open('GET','/questions',true);
+        xRequest.send();
+    }
+
+    //This will get the question data and map it to the buttons
+    function displayQuestions() {
+        
+        let data = JSON.parse(this.responseText)
+        if (this.readyState == 4 && this.status == 200) {
+            data.forEach(element => {
+                
+                document.getElementById("Question-Div").insertAdjacentHTML('beforeend',createQuiz(element));
+                
+            });
+            
+        }
+    }
+
+    //This function will check the single answer of a question when a user is to select a radio button for a question
+   function checkAnswer(object) {
+ 
+        let xRequest = new XMLHttpRequest();
+        xRequest.onreadystatechange = answer;
+        xRequest.open('GET','/answer?q=' + object.name + "&a=" + object.id,true);
+        xRequest.send();
+
+    }
+
+    //Change the text content of the answer object for a particular question to display the result
+    //We dispaly incorrect or correct, which is determined serverside
+    function answer() {
+
+        let data = JSON.parse(this.responseText)
+        let value = document.getElementById(data.question);
+        value.textContent = data.answer;
+
+
+    }
+
+    //This function simply returns the quiz question html as a string
+    function createQuiz(current) {
+
+
+        question = (`
+                <div class="question"><label >${current.stem}</label></div><br> 
+        `);
+
+        answers  = ``
+
+        p = current.options;
+     
+        p.forEach(((value,index) => {question = question + `<div class="radiooption"> <input type="radio" id="${index}" name="${current.stem}" value="${value}" onclick="checkAnswer(this)"> 
+            <label class="lab" for="${value}">${value}</label></div><br>  `}))
+   
+        question = `<div >` + question + `<div class="labb"> <label class="answered" id="${current.stem}"></label> </div> <br> </div>`; 
+        return question;
+    }
+
+    //This jquery function will send the form data to the backend, and then upon receiving processed data will change the content of the Answered element
+    $("form").submit(function(event){
+
+    event.preventDefault();
+    $.ajax({
+      url: '/answers',
+      type: 'GET',
+      data :  $("form").serializeArray(),
+      success: function(data){
+        document.getElementById("Answered").textContent = data;
+      }
+    });
+
+});
+    
+
+    
+
+
+</script>
+</html>
